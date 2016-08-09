@@ -27,7 +27,10 @@ public class ContaBancaria implements OperacoesBancarias{
 		if(getSaldo() > valor && valor > 0){
 			this.saldo -= valor;
 			this.listExtrato.add(new Extrato("Saque", "Saque valor: " + valor));
+		} else {
+			throw new IllegalArgumentException();
 		}
+		
 	}
 
 	@Override
@@ -51,6 +54,12 @@ public class ContaBancaria implements OperacoesBancarias{
 	@Override
 	public List<Extrato> extrato() {
 		return listExtrato;
+	}
+	
+	@Override
+	public String numeroConta() {
+		// TODO Auto-generated method stub
+		return getNumeroConta();
 	}
 
 	public String getNumeroConta() {

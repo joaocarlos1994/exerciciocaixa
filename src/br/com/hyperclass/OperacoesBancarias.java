@@ -9,5 +9,6 @@ public interface OperacoesBancarias {
 	public void deposito(double valor, ContaBancaria contaBancaria);
 	public void transferencia(double valor, ContaBancaria contaBancaria);
 	public List<Extrato> extrato();
+	public String numeroConta();
 
 }

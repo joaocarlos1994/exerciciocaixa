@@ -1,36 +1,32 @@
 package br.com.hyperclass;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class Main {
 
 	public static void main(String[] args) {
 		
-		Cedula cedula10 = new Cedula(10, 10);
-		Cedula cedula20 = new Cedula(20, 20);
-		Cedula cedula50 = new Cedula(50, 4);
-		Cedula cedula100 = new Cedula(100, 3);
+		Caixa caixa = new Caixa();
+		Pessoa pessoa = caixa.retornaPessoaNumeroConta("54125-9");
+		Caixa caixa2 = new Caixa(pessoa.operacoesBancarias(), pessoa);
 		
-		ContaBancaria contaBancaria = new ContaBancaria("1111-1", 1000);
-		Pessoa pessoa = new Pessoa("JoÃ£o Silva", contaBancaria);
+		System.out.println("Cliente: " + caixa2.getPessoa().getNome() + " Saldo: " + caixa2.saldo());
+		caixa2.saque(10);
 		
-		Caixa caixa = new Caixa(contaBancaria, pessoa);
-		caixa.adicionarNotaCaixa("10", cedula10);
-		caixa.adicionarNotaCaixa("20", cedula20);
-		caixa.adicionarNotaCaixa("50", cedula50);
-		caixa.adicionarNotaCaixa("100", cedula100);
-		
-		Map<String, Cedula> cedulasSaque = caixa.saque(900);
-		
-		System.out.println("Saldo: " + caixa.saldo());
-		
-		for (String chave : cedulasSaque.keySet()) {
-			Cedula cedula = cedulasSaque.get(chave);
-			System.out.println("Valor: " + cedula.getValor() + " Quantidade: " + cedula.getQuantidade() + "\n");
+		for(Extrato extrato : caixa2.geExtratos()){
+			System.out.println("Título: " + extrato.getTituloOperacao());
+			System.out.println("Operação: " + extrato.getOperacaoRealizada());
 		}
-
+		
+		System.out.println("Cliente: " + caixa2.getPessoa().getNome() + " Saldo: " + caixa2.saldo());
+		
+		System.out.println("");
+		
+		Map<String, Cedula> cedulasCaixa = caixa2.getCedulasCaixa();
+		
+		for(Cedula cedula : cedulasCaixa.values()){
+			System.out.println("Valor: " + cedula.getValor() + " Quantidade: " + cedula.getQuantidade());
+		}
 	}
 
 }
