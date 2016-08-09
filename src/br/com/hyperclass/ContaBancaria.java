@@ -43,7 +43,7 @@ public class ContaBancaria implements OperacoesBancarias{
 		if(valor > 0 && this.saldo > valor){
 			contaBancaria.saldo += valor;
 			this.saldo -= valor;
-			this.listExtrato.add(new Extrato("Transferência", "Transferência valor: " + valor + "para conta: " + contaBancaria.numeroConta));
+			this.listExtrato.add(new Extrato("Transferï¿½ncia", "Transferï¿½ncia valor: " + valor + "para conta: " + contaBancaria.numeroConta));
 		}
 		
 	}

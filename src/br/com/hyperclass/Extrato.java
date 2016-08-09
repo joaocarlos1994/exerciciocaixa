@@ -9,6 +9,14 @@ public class Extrato {
 		super();
 		this.tituloOperacao = tituloOperacao;
 		this.operacaoRealizada = operacaoRealizada;
+	}
+
+	public String getTituloOperacao() {
+		return tituloOperacao;
+	}
+
+	public String getOperacaoRealizada() {
+		return operacaoRealizada;
 	};
 	
 	
