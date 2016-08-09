@@ -13,23 +13,20 @@ public class Main {
 		Cedula cedula50 = new Cedula(50, 4);
 		Cedula cedula100 = new Cedula(100, 3);
 		
-		Map<String, Cedula> cedulas = new HashMap<>();
-		cedulas.put("10", cedula10);
-		cedulas.put("20", cedula20);
-		cedulas.put("50", cedula50);
-		cedulas.put("100", cedula100);
-		
 		ContaBancaria contaBancaria = new ContaBancaria("1111-1", 1000);
 		Pessoa pessoa = new Pessoa("João Silva", contaBancaria);
 		
-		Caixa caixa = new Caixa(contaBancaria, pessoa, cedulas);
+		Caixa caixa = new Caixa(contaBancaria, pessoa);
+		caixa.adicionarNotaCaixa("10", cedula10);
+		caixa.adicionarNotaCaixa("20", cedula20);
+		caixa.adicionarNotaCaixa("50", cedula50);
+		caixa.adicionarNotaCaixa("100", cedula100);
 		
-		Map<String, Cedula> cedulasSaque = caixa.saque(10);
+		Map<String, Cedula> cedulasSaque = caixa.saque(900);
 		
-		System.out.println(caixa.saldo());
+		System.out.println("Saldo: " + caixa.saldo());
 		
-		Set<String> chaves = cedulasSaque.keySet();
-		for (String chave : chaves) {
+		for (String chave : cedulasSaque.keySet()) {
 			Cedula cedula = cedulasSaque.get(chave);
 			System.out.println("Valor: " + cedula.getValor() + " Quantidade: " + cedula.getQuantidade() + "\n");
 		}

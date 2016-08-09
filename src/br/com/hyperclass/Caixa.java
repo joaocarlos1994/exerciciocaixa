@@ -14,15 +14,11 @@ public class Caixa {
 	private final Map<String, Cedula> cedulasCaixa;
 	private Map<String, Cedula> cedulasSaque;
 	
-	public Caixa(OperacoesBancarias operacoesBancarias, Pessoa pessoa, Map<String, Cedula> cedulasCaixa) {
+	public Caixa(OperacoesBancarias operacoesBancarias, Pessoa pessoa) {
 		super();
 		this.operacoesBancarias = operacoesBancarias;
 		this.pessoa = pessoa;
-		if (totalCaixa(cedulasCaixa) <  100){
-			this.cedulasCaixa = cedulasCaixa;
-		} else {
-			this.cedulasCaixa = null;
-		}
+		this.cedulasCaixa = new HashMap<>();
 		
 	}
 
@@ -38,10 +34,8 @@ public class Caixa {
 		
 		double total = 0;
 		
-		Set<String> chaves = cedulasCaixa.keySet();
-		for (String chave : chaves) {
-			Cedula cedula = cedulasCaixa.get(chave);
-			total += (cedula.getQuantidade() * cedula.getValor());
+		for(Cedula cedula : cedulasCaixa.values()){
+			total += cedula.getValor() * cedula.getQuantidade();
 		}
 		
 		return total;
@@ -64,6 +58,15 @@ public class Caixa {
 	
 	public List<Extrato> geExtratos(){
 		return operacoesBancarias.extrato();
+	}
+	
+	public Cedula getCedula(String key){
+		Cedula cedula = cedulasCaixa.get(key);
+		return cedula;
+	}
+	
+	public void adicionarNotaCaixa(String key, Cedula cedula){
+		cedulasCaixa.put(key, cedula);
 	}
 	
 	private void notas10(final double valor){
@@ -113,11 +116,5 @@ public class Caixa {
 		}
 		notas50(restoDivisao);
 	}
-	
-	public Cedula getCedula(String key){
-		Cedula cedula = cedulasCaixa.get(key);
-		return cedula;
-	}
-
 
 }
