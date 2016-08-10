@@ -1,22 +1,18 @@
 package br.com.hyperclass;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 public class Caixa {
 	
-	private OperacoesBancarias operacoesBancarias;
+	private OperacoesContaBancaria operacoesBancarias;
 	private Pessoa pessoa;
 	private final Map<String, Pessoa> listaPessoa;
 	private final Map<String, Cedula> cedulasCaixa;
 	private Map<String, Cedula> cedulasSaque;
 
-	public Caixa(OperacoesBancarias operacoesBancarias, Pessoa pessoa) {
+	public Caixa(OperacoesContaBancaria operacoesBancarias, Pessoa pessoa) {
 		super();
 		this.operacoesBancarias = operacoesBancarias;
 		this.pessoa = pessoa;
@@ -34,7 +30,7 @@ public class Caixa {
 		inicializarPessoas();
 	}
 
-	public OperacoesBancarias getOperacoesBancarias() {
+	public OperacoesContaBancaria getOperacoesBancarias() {
 		return operacoesBancarias;
 	}
 

@@ -2,7 +2,7 @@ package br.com.hyperclass;
 
 import java.util.List;
 
-public interface OperacoesBancarias {
+public interface OperacoesContaBancaria {
 	
 	public double saldo();
 	public void saque(double valor);

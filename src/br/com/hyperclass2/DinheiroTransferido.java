@@ -2,16 +2,15 @@ package br.com.hyperclass2;
 
 import java.util.Date;
 
-public class DinheiroDepositado extends EventoTrasacional {
+public class DinheiroTransferido extends EventoTrasacional {
 
-
-	public DinheiroDepositado(double valor, Date date, TypeEvent typeEvent) {
+	public DinheiroTransferido(double valor, Date date, TypeEvent typeEvent) {
 		super(valor, date, typeEvent);
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
-	public int compareTo(EventoTrasacional o) {
+	public int compareTo(EventoTrasacional arg0) {
 		// TODO Auto-generated method stub
 		return 0;
 	}

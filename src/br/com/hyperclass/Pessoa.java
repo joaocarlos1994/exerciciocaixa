@@ -3,9 +3,9 @@ package br.com.hyperclass;
 public class Pessoa {
 	
 	private final String nome;
-	private OperacoesBancarias operacoesBancarias; //Abstração para poder utilizar n tipo de conta.
+	private OperacoesContaBancaria operacoesBancarias; //Abstração para poder utilizar n tipo de conta.
 	
-	public Pessoa(String nome, OperacoesBancarias operacoesBancarias) {
+	public Pessoa(String nome, OperacoesContaBancaria operacoesBancarias) {
 		super();
 		this.nome = nome;
 		this.operacoesBancarias = operacoesBancarias;
@@ -15,7 +15,7 @@ public class Pessoa {
 		return nome;
 	}
 
-	public OperacoesBancarias operacoesBancarias() {
+	public OperacoesContaBancaria operacoesBancarias() {
 		return operacoesBancarias;
 	}
 

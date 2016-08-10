@@ -3,7 +3,7 @@ package br.com.hyperclass;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ContaBancaria implements OperacoesBancarias{
+public class ContaBancaria implements OperacoesContaBancaria{
 	
 	private final String numeroConta;
 	private double saldo;
