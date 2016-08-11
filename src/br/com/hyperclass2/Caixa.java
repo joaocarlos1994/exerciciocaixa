@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+
 public class Caixa {
 	
 	/** 
@@ -14,14 +15,17 @@ public class Caixa {
 	 */
 	
 	private final Map<Valor, Collection<Cedula>> cedulasCaixa;
+	private Map<Valor, Collection<Cedula>> cedulasSaque;
 	private final Map<String, Pessoa> listaContaPessoa;
 	private OperacoesContaCorrente operacoesContaCorrente;
+	private Pessoa pessoa;
 	
-	public Caixa(OperacoesContaCorrente operacoesContaCorrente, Pessoa pessoa) {
+	public Caixa(Pessoa pessoa) {
 		super();
 		this.cedulasCaixa = new HashMap<Valor, Collection<Cedula>>();
 		this.listaContaPessoa = new HashMap<String, Pessoa>();
-		this.operacoesContaCorrente = operacoesContaCorrente;
+		this.operacoesContaCorrente = pessoa.getOperacoesBancarias();
+		this.pessoa = pessoa;
 		initializeCedulasCaixa();
 		initializePessoaCaixa();
 	}
@@ -38,12 +42,13 @@ public class Caixa {
 		return operacoesContaCorrente.saldo();
 	}
 	
-	public boolean saque(double valor){
+	public Map<Valor, Collection<Cedula>> saque(double valor){
 		if(valor > 0 && valorTotalCaixa() > valor){
 			operacoesContaCorrente.saque(valor);
-			return true;
+			cedulasSaque = new HashMap<Valor, Collection<Cedula>>();
+			notas100(valor);
 		}
-		return false;
+		return cedulasSaque;
 	}
 	
 	public boolean deposito(double valor, String numeroContaCorrente){
@@ -66,11 +71,25 @@ public class Caixa {
 		return false;
 	}
 	
+	public Collection<EventoTrasacional> extrato(){
+		return operacoesContaCorrente.extrato();
+	}
+	
+	
+	public boolean validarLogin(final String numeroConta){
+		Pessoa pessoa = retornaPessoaNumeroConta(numeroConta);
+		if (pessoa != null){
+			setPessoa(pessoa);
+			setOperacoesContaCorrente(pessoa.getOperacoesBancarias());
+			return true;
+		}
+		throw new IllegalAccessError();
+	}
 	
 	/**
 	 * Retorna um objeto do tipo pessoa, atráves do número da conta.
 	 * */
-	public Pessoa retornaPessoaNumeroConta(String numeroConta){
+	private Pessoa retornaPessoaNumeroConta(String numeroConta){
 		Pessoa pessoa = listaContaPessoa.get(numeroConta);
 		return pessoa;
 	}
@@ -100,8 +119,23 @@ public class Caixa {
 		cedulasCaixa.put(valor, cedulasList);
 	}
 	
-	public Map<Valor, Collection<Cedula>> getCedulasCaixa() {
-		return cedulasCaixa;
+	private Collection<Cedula> removerCedulasCaixa(final Valor valor, int quantidade){
+		ArrayList<Cedula> cedula = (ArrayList<Cedula>) cedulasCaixa.get(valor);
+		for (int i = 0; i < quantidade; i++) {
+			cedula.remove(i);
+		}
+		return cedula;
+	}
+	
+	private Collection<Cedula> adicionarNotasSaque(final Valor valor, final int quantidade){
+		
+		Collection<Cedula> listCedulaSaque = new ArrayList<Cedula>();
+		
+		for (int i = 0; i < quantidade; i++) {
+			Cedula cedula = new Cedula(valor);
+			listCedulaSaque.add(cedula);
+		}
+		return listCedulaSaque;
 	}
 	
 	private double valorTotalCaixa(){
@@ -113,6 +147,107 @@ public class Caixa {
 			totalCaixa += listaNotasCaixa.get(key).size() * key.getValue();
 		}
 		return totalCaixa;
+	}
+	
+	private void notas10(final double valor){
+		
+		double restoDivisao = valor;
+		Collection<Cedula> cedula = cedulasCaixa.get(Valor.Dez);
+		
+		if((valor >= 10 && valor < 20) && cedulasCaixa.containsKey(Valor.Dez) || (!cedulasCaixa.containsKey(Valor.Vinte) && cedulasCaixa.containsKey(Valor.Dez))){
+			int totalNotas = (int) valor / 10;
+			int totalNotasCaixa = cedula.size();
+			
+			if(totalNotasCaixa > totalNotas){
+				
+				restoDivisao = valor % 20;
+				cedulasCaixa.put(Valor.Dez, removerCedulasCaixa(Valor.Dez, totalNotas));
+				cedulasSaque.put(Valor.Dez, adicionarNotasSaque(Valor.Dez, totalNotas));
+				
+			} else {
+				throw new IllegalArgumentException();
+			}
+		}
+	}
+	
+	private void notas20(final double valor){
+		
+		double restoDivisao = valor;
+		Collection<Cedula> cedula = cedulasCaixa.get(Valor.Vinte);
+		
+		if((valor >= 20 && valor < 50) && cedulasCaixa.containsKey(Valor.Vinte) || (!cedulasCaixa.containsKey(Valor.Cinquenta) && cedulasCaixa.containsKey(Valor.Vinte))){
+			int totalNotas = (int) valor / 20;
+			int totalNotasCaixa = cedula.size();
+			
+			if(totalNotasCaixa > totalNotas){
+				
+				restoDivisao = valor % 20;
+				cedulasCaixa.put(Valor.Vinte, removerCedulasCaixa(Valor.Vinte, totalNotas));
+				cedulasSaque.put(Valor.Vinte, adicionarNotasSaque(Valor.Vinte, totalNotas));
+				
+			} else {
+				
+				restoDivisao = valor - (totalNotasCaixa * 20);
+				cedulasCaixa.remove(Valor.Vinte);
+				cedulasSaque.put(Valor.Vinte, adicionarNotasSaque(Valor.Vinte, totalNotasCaixa));
+			}
+		}
+		notas10(restoDivisao);
+	}
+	
+	private void notas50(final double valor){
+		
+		double restoDivisao = valor;
+		Collection<Cedula> cedula = cedulasCaixa.get(Valor.Cinquenta);
+		
+		if((valor >= 50 && valor < 100) && cedulasCaixa.containsKey(Valor.Cinquenta) || (!cedulasCaixa.containsKey(Valor.Cem) && cedulasCaixa.containsKey(Valor.Cinquenta))){
+			int totalNotas = (int) valor / 50;
+			int totalNotasCaixa = cedula.size();
+			
+			if(totalNotasCaixa > totalNotas){
+				
+				restoDivisao = valor % 50;
+				cedulasCaixa.put(Valor.Cinquenta, removerCedulasCaixa(Valor.Cinquenta, totalNotas));
+				cedulasSaque.put(Valor.Cinquenta, adicionarNotasSaque(Valor.Cinquenta, totalNotas));
+				
+			} else {
+				
+				restoDivisao = valor - (totalNotasCaixa * 50);
+				cedulasCaixa.remove(Valor.Cinquenta);
+				cedulasSaque.put(Valor.Cinquenta, adicionarNotasSaque(Valor.Cinquenta, totalNotasCaixa));
+			}
+		}
+		notas20(restoDivisao);
+	}
+	
+	private void notas100(final double valor){
+		
+		double restoDivisao = valor;
+		Collection<Cedula> cedula = cedulasCaixa.get(Valor.Cem);
+		
+		if((valor >= 100) && cedulasCaixa.containsKey(Valor.Cem)){
+			int totalNotas = (int) valor / 100;
+			int totalNotasCaixa = cedula.size();
+			
+			if(totalNotasCaixa > totalNotas){
+				
+				restoDivisao = valor % 100;
+				cedulasCaixa.put(Valor.Cem, removerCedulasCaixa(Valor.Cem, totalNotas));
+				cedulasSaque.put(Valor.Cem, adicionarNotasSaque(Valor.Cem, totalNotas));
+				
+			} else {
+				
+				restoDivisao = valor - totalNotasCaixa * 100;
+				cedulasCaixa.remove(Valor.Cem);
+				cedulasSaque.put(Valor.Cem, adicionarNotasSaque(Valor.Cem, totalNotasCaixa));
+			}
+			
+		}
+		notas50(restoDivisao);
+	}
+	
+	public Map<Valor, Collection<Cedula>> getCedulasCaixa() {
+		return cedulasCaixa;
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -161,5 +296,14 @@ public class Caixa {
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public void setOperacoesContaCorrente(OperacoesContaCorrente operacoesContaCorrente) {
+		this.operacoesContaCorrente = operacoesContaCorrente;
+	}
+
+	public void setPessoa(Pessoa pessoa) {
+		this.pessoa = pessoa;
+	}
+	
 
 }

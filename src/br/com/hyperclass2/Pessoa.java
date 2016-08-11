@@ -18,5 +18,8 @@ public class Pessoa {
 	public OperacoesContaCorrente getOperacoesBancarias() {
 		return operacoesContaCorrente;
 	}
+	
+	
+
 
 }

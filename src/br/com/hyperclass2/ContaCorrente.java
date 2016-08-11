@@ -49,10 +49,11 @@ public class ContaCorrente implements OperacoesContaCorrente {
 	 * */
 	@Override
 	public void deposito(double valor, ContaCorrente contaCorrente) {
-		if(valor > 0){
-			addEventTransaction(new DinheiroDepositado(valor));
-		}
-		throw new IllegalArgumentException();
+		if (valor > 0) {
+			contaCorrente.addEventTransaction(new DinheiroDepositado(valor));
+		} else {
+			throw new IllegalArgumentException();
+		}	
 	}
 	
 	/**
@@ -62,9 +63,16 @@ public class ContaCorrente implements OperacoesContaCorrente {
 	@Override
 	public void transferencia(double valor, ContaCorrente contaCorrente) {
 		if(saldo > valor && valor > 0){
-			addEventTransaction(new DinheiroTransferido(valor * (- 1)));
+			contaCorrente.addEventTransaction(new DinheiroTransferido(valor * (- 1)));
+		} else {
+			throw new IllegalArgumentException();
 		}
-		throw new IllegalArgumentException();
+	}
+	
+	@Override
+	public Collection<EventoTrasacional> extrato() {
+		// TODO Auto-generated method stub
+		return getEventoTrasacionais();
 	}
 	
 	public double getSaldo() {
@@ -92,7 +100,6 @@ public class ContaCorrente implements OperacoesContaCorrente {
 	public String getNumeroContaCorrente() {
 		// TODO Auto-generated method stub
 		return getNumeroConta();
-	}
-	
+	}	
 	
 }
