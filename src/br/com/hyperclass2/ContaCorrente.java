@@ -1,9 +1,7 @@
 package br.com.hyperclass2;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class ContaCorrente implements OperacoesContaCorrente {
 	
@@ -12,22 +10,18 @@ public class ContaCorrente implements OperacoesContaCorrente {
 	
 	private double saldo;
 	private final String numeroConta;
-	private final Map<String, List<EventoTrasacional>> eventoTrasacionais;
+	private final Collection<EventoTrasacional> eventoTrasacionais;
 	
 	public ContaCorrente(double saldo, String numeroConta) {
 		super();
 		this.saldo = saldo;
 		this.numeroConta = numeroConta;
-		this.eventoTrasacionais = new HashMap<String, List<EventoTrasacional>>();
+		this.eventoTrasacionais = new ArrayList<EventoTrasacional>();
+		eventoTrasacionais.add(new ValorDisponibilizado(saldo));
 	}
 	
-	public void addEventTransaction(String key, EventoTrasacional eventoTrasacional){
-		
-		if(eventoTrasacionais.containsKey(key)){
-			List<EventoTrasacional> eventoTrasacionaisList = eventoTrasacionais.get(key);
-			eventoTrasacionaisList.add(eventoTrasacional);
-			eventoTrasacionais.put(key, eventoTrasacionaisList);
-		}
+	public void addEventTransaction(final EventoTrasacional eventoTrasacional){
+		eventoTrasacionais.add(eventoTrasacional);
 	}
 
 	@Override
@@ -37,58 +31,60 @@ public class ContaCorrente implements OperacoesContaCorrente {
 	}
 
 	/**
-	 * @param valor está varáivel se referente ao valor que será subtraido da conta corrente.
+	 * @param valor estï¿½ varï¿½ivel se referente ao valor que serï¿½ subtraido da conta corrente.
 	 * */
 	@Override
 	public void saque(double valor) {
 		if(saldo > valor){
 			saldo -= valor;
-			//Implementar lógica das notas
-			addEventTransaction("dinheiroSacado", new DinherioSacado(valor, new Date(), TypeEvent.DinheiroSacado));
+			addEventTransaction(new DinherioSacado(valor * (- 1)));
+		} else {
+			throw new IllegalArgumentException();
 		}
-		
-		throw new IllegalArgumentException();
-		
 	}
 	
 	/**
 	 * @param valor Este parametro referece ao valor a ser depositado
-	 * @param contaCorrente variável que ira receber o valor do depósito.
+	 * @param contaCorrente variï¿½vel que ira receber o valor do depï¿½sito.
 	 * */
 	@Override
 	public void deposito(double valor, ContaCorrente contaCorrente) {
 		if(valor > 0){
-			contaCorrente.saldo += valor;
-			//Implementar lógica das notas
-			//Arrumar Classes de evento
-			addEventTransaction("dinheiroDepositado", new DinheiroDepositado(valor, new Date(), TypeEvent.DinheiroDepositado));
+			addEventTransaction(new DinheiroDepositado(valor));
 		}
 		throw new IllegalArgumentException();
 	}
 	
 	/**
 	 * @param valor Referente a valor que deseja transferir
-	 * @param contaCorrente cliente onde será depositado o valor da transferência
+	 * @param contaCorrente cliente onde serï¿½ depositado o valor da transferï¿½ncia
 	 * */
 	@Override
 	public void transferencia(double valor, ContaCorrente contaCorrente) {
 		if(saldo > valor && valor > 0){
-			saldo -= valor;
-			contaCorrente.saldo += valor;
-			addEventTransaction("dinheiroTransferido", new DinheiroTransferido(valor, new Date(), TypeEvent.DinheiroTransferido));
+			addEventTransaction(new DinheiroTransferido(valor * (- 1)));
 		}
 		throw new IllegalArgumentException();
 	}
 	
 	public double getSaldo() {
-		return saldo;
+		
+		double saldoEvents = 0;
+		
+		for (EventoTrasacional eventoTrasacional : eventoTrasacionais) {
+			saldoEvents += eventoTrasacional.getValores();
+		}
+		
+		this.saldo = saldoEvents;
+		
+		return saldoEvents;
 	}
 
 	public String getNumeroConta() {
 		return numeroConta;
 	}
 
-	public Map<String, List<EventoTrasacional>> getEventoTrasacionais() {
+	public Collection<EventoTrasacional> getEventoTrasacionais() {
 		return eventoTrasacionais;
 	}
 

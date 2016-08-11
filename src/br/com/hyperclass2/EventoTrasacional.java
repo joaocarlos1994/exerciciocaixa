@@ -8,10 +8,10 @@ public abstract class EventoTrasacional implements Comparable<EventoTrasacional>
 	private final Date date;
 	private final TypeEvent typeEvent;
 	
-	public EventoTrasacional(double valor, Date date, TypeEvent typeEvent) {
+	public EventoTrasacional(double valor, TypeEvent typeEvent) {
 		super();
 		this.valor = valor;
-		this.date = date;
+		this.date = new Date();
 		this.typeEvent = typeEvent;
 	}
 

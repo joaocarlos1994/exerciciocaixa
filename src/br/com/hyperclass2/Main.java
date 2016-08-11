@@ -1,21 +1,17 @@
 package br.com.hyperclass2;
 
-import java.util.Collection;
-import java.util.Map;
-
 public class Main {
 	
 	public static void main(String[] args) {
 		
-		ContaCorrente contaCorrente = new ContaCorrente(1000, "1000");
-		Pessoa pessoa = new Pessoa("João da Silva", contaCorrente);
-		Caixa caixa = new Caixa(contaCorrente, pessoa);
+		Caixa caixa = new Caixa();
+		Pessoa pessoa = caixa.retornaPessoaNumeroConta("54125-9");
 		
-		Map<String, Collection<Cedula>> listaCedula = caixa.getCedulasCaixa();
+		Caixa caixa2 = new Caixa(pessoa.getOperacoesBancarias(), pessoa);
+		System.out.println("Saldo: " + caixa2.saldo());
+		System.out.println("Saque: " + caixa2.saque(10));
+		System.out.println("Saldo: " + caixa2.saldo());
 		
-		for(String key : listaCedula.keySet()){
-			System.out.println("Notas de " + key + ": " + listaCedula.get(key).size());
-		}
 		
 	}
 

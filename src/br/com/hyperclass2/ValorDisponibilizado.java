@@ -1,11 +1,9 @@
 package br.com.hyperclass2;
 
-import java.util.Date;
-
 public class ValorDisponibilizado extends EventoTrasacional {
 
-	public ValorDisponibilizado(double valor, Date date, TypeEvent typeEvent) {
-		super(valor, date, typeEvent);
+	public ValorDisponibilizado(double valor) {
+		super(valor, TypeEvent.ValorDisponibilizado);
 		// TODO Auto-generated constructor stub
 	}
 

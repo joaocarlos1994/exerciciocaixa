@@ -1,11 +1,9 @@
 package br.com.hyperclass2;
 
-import java.util.Date;
-
 public class DinherioSacado extends EventoTrasacional {
 
-	public DinherioSacado(double valor, Date date, TypeEvent typeEvent) {
-		super(valor, date, typeEvent);
+	public DinherioSacado(double valor) {
+		super(valor, TypeEvent.DinheiroSacado);
 		// TODO Auto-generated constructor stub
 	}
 

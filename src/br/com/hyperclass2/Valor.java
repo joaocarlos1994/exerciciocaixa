@@ -10,4 +10,10 @@ public enum Valor {
 		this.value = value;
 	}
 
+	public int getValue() {
+		return value;
+	}
+	
+	
+
 }
