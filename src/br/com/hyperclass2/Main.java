@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Scanner;
 
+import br.com.hyperclass2.singleton.CaixaSingleton;
+
 public class Main {
 	
 	
@@ -13,8 +15,9 @@ public class Main {
 		boolean iniciarCaixa = true;
 		Scanner entrada = new Scanner(System.in);
 		
-		Caixa caixa = new Caixa();
-		System.out.println("Digite o número da conta: ");
+		Caixa caixa = CaixaSingleton.getCaixa();
+		
+		System.out.println("Digite o nï¿½mero da conta: ");
 		String numeroConta = entrada.next();
 		
 		
@@ -23,8 +26,8 @@ public class Main {
 			
 			System.out.println("1 - Saldo");
 			System.out.println("2 - Saque");
-			System.out.println("3 - Déposito");
-			System.out.println("4 - Transfêrencia");
+			System.out.println("3 - Dï¿½posito");
+			System.out.println("4 - Transfï¿½rencia");
 			System.out.println("5 - Extrato");
 			System.out.println("6 - Sair");
 			
@@ -57,19 +60,19 @@ public class Main {
 				}
 				break;
 			case 3:
-				System.out.println("Digite o número da conta de deposito");
+				System.out.println("Digite o nï¿½mero da conta de deposito");
 				String numeroContaDeposito = entrada.next();
 				
-				System.out.println("Digite o valor do depósito");
+				System.out.println("Digite o valor do depï¿½sito");
 				double valorDeposito = entrada.nextDouble();
 				
 				caixa.deposito(valorDeposito, numeroContaDeposito);
 				break;
 			case 4:
-				System.out.println("Digite o número da conta de Transfêrencia");
+				System.out.println("Digite o nï¿½mero da conta de Transfï¿½rencia");
 				String numeroContaTransferencia = entrada.next();
 				
-				System.out.println("Digite o valor do depósito");
+				System.out.println("Digite o valor do depï¿½sito");
 				double valorTransferencia = entrada.nextDouble();
 				caixa.transferencia(valorTransferencia, numeroContaTransferencia);
 				break;
@@ -85,7 +88,7 @@ public class Main {
 				main(args);
 				break;	
 			default:
-				System.out.println("Opções inválida");
+				System.out.println("Opï¿½ï¿½es invï¿½lida");
 				break;
 			}
 			

@@ -63,7 +63,8 @@ public class ContaCorrente implements OperacoesContaCorrente {
 	@Override
 	public void transferencia(double valor, ContaCorrente contaCorrente) {
 		if(saldo > valor && valor > 0){
-			contaCorrente.addEventTransaction(new DinheiroTransferido(valor * (- 1)));
+			contaCorrente.addEventTransaction(new DinheiroTransferido(valor));
+			addEventTransaction(new DinheiroTransferido(valor * - 1));
 		} else {
 			throw new IllegalArgumentException();
 		}
